@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Account Info{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>Account Info</h2>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Account Number</th>
+                    <td>{{ account.account_number }}</td>
+                </tr>
+                <tr>
+                    <th>Account Name</th>
+                    <td>{{ account.account_name }}</td>
+                </tr>
+                <tr>
+                    <th>Balance</th>
+                    <td>{{ account.balance }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
