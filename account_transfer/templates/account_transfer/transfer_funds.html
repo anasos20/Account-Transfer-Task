@@ -10,16 +10,16 @@
             <div class="alert alert-info">
                 <ul>
                     {% for message in messages %}
-                    <li>{{ message }}</li>
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
                     {% endfor %}
                 </ul>
             </div>
             {% endif %}
-            <form method="POST" action="{% url 'transfer_funds' %}">
+            <form method="POST" action="{% url 'transfer_funds' %}" class="needs-validation" novalidate>
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="from_account">From Account</label>
-                    <select name="from_account" id="from_account" class="form-control">
+                    <select name="from_account" id="from_account" class="form-control" required>
                         <option value="">Select Account</option>
                         {% for account in accounts %}
                         <option value="{{ account.account_number }}">{{ account.account_name }}</option>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group">
                     <label for="to_account">To Account</label>
-                    <select name="to_account" id="to_account" class="form-control">
+                    <select name="to_account" id="to_account" class="form-control" required>
                         <option value="">Select Account</option>
                         {% for account in accounts %}
                         <option value="{{ account.account_number }}">{{ account.account_name }}</option>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-group">
                     <label for="amount">Amount</label>
-                    <input type="text" name="amount" id="amount" class="form-control" placeholder="Enter amount">
+                    <input type="text" name="amount" id="amount" class="form-control" placeholder="Enter amount" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Transfer</button>
             </form>
@@ -47,6 +47,31 @@
 {% endblock %}
 {% block extra_js %}
 <script>
+    document.querySelector('form').addEventListener('submit', function (event) {
+        var amount = document.getElementById('amount').value;
+        var fromAccount = document.getElementById('from_account').value;
+        var toAccount = document.getElementById('to_account').value;
+    
+        if (!fromAccount || !toAccount) {
+            event.preventDefault();
+            alert('Both "From Account" and "To Account" fields are required.');
+        } else if (fromAccount === toAccount) {
+            event.preventDefault();
+            alert('"From Account" and "To Account" must be different.');
+        } else if (amount <= 0) {
+            event.preventDefault();
+            alert('Please enter a valid amount greater than 0.');
+        }
+    });
+    var form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+        }
+    });
+    
     $(document).ready(function () {
         // Disable selected "From Account" in "To Account" dropdown
         $('#from_account').change(function () {
@@ -61,16 +86,6 @@
 
             // Reset To Account selection when From Account changes
             $('#to_account').val("");
-        });
-
-        // Validate Amount on Input
-        $('#amount').on('input', function () {
-            var amount = $(this).val();
-            if (isNaN(amount) || parseFloat(amount) <= 0) {
-                $(this).addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid');
-            }
         });
     });
 </script>

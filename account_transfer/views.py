@@ -86,13 +86,15 @@ def transfer_funds(request):
     if request.method == 'POST':
         from_account_number = request.POST.get('from_account')
         to_account_number = request.POST.get('to_account')
-        amount = Decimal(request.POST.get('amount'))
-        
+        amount = request.POST.get('amount')
+        if not from_account_number or not to_account_number or not amount:
+            messages.error(request, "Please fill in all fields.")
+            return redirect('transfer_funds')
         try:
             from_account = Account.objects.select_for_update().get(account_number=from_account_number)
             to_account = Account.objects.select_for_update().get(account_number=to_account_number)
             
-            amount = amount
+            amount = Decimal(amount)
             if amount <= 0:
                 messages.error(request, "Amount must be greater than zero.")
             elif from_account.balance < amount:
