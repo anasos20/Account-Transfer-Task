@@ -2,7 +2,7 @@ TODO:init django project
 TODO:install requeriements
 TODO:configure settings (templates, static, database)
 TODO:create app for the assesment
-TODO:create models for the assesment (accounts, transactions)
+TODO:create models for the assesment (accounts)
 TODO:create templates for the assesment (base, home, import csv, list accounts, account info, transfer funds)
 TODO:create urls for the assesment (home, import csv, list accounts, account info, transfer funds)
 TODO:create views for the assesment (home, import csv, list accounts, account info, transfer funds)
